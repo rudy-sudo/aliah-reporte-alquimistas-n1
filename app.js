@@ -11,6 +11,23 @@ const modalContent=document.getElementById('studentModalContent');
 const modalClose=document.getElementById('modalClose');
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const list=items=>(items&&items.length?items:['Sin datos suficientes.']).map(item=>`<li>${escapeHtml(item)}</li>`).join('');
+function scoreLevel(score){
+  const value=Number(score||0);
+  if(value>=3.5)return ['Destacado','level-high'];
+  if(value>=2.5)return ['Competente','level-mid'];
+  if(value>=1.5)return ['En desarrollo','level-low'];
+  return ['Emergente','level-base'];
+}
+function domainScale(score){
+  const value=Math.max(0,Math.min(4,Number(score||0)));
+  const [label,cls]=scoreLevel(value);
+  const left=value/4*100;
+  return `<div class="domain-scale modal-domain" aria-label="Score ${value.toFixed(2)} de 4, nivel ${escapeHtml(label)}">
+    <div class="domain-track"><span></span><span></span><span></span><span></span><i style="left:${left}%"></i></div>
+    <div class="domain-labels"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span></div>
+    <p class="domain-note"><b class="${cls}">${escapeHtml(label)}</b></p>
+  </div>`;
+}
 function openStudent(id){
   const student=(d.students||[]).find(item=>item.studentId===id);
   if(!student)return;
@@ -27,6 +44,7 @@ function openStudent(id){
       ${(student.sprints||[]).map(sprint=>`
         <article class="modal-sprint">
           <div class="modal-sprint-head"><div><p class="eyebrow">Sprint ${sprint.sprint}</p><h3>${escapeHtml(sprint.profession)}</h3></div><span class="modal-sprint-score">${Number(sprint.score||0).toFixed(2)}/4</span></div>
+          ${domainScale(sprint.score)}
           <div class="modal-ai-grid">
             <p><b>Propósito detectado</b>${escapeHtml(sprint.purpose)}</p>
             <p><b>Logro esperado</b>${escapeHtml(sprint.achievement)}</p>
