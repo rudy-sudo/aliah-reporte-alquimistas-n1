@@ -35,7 +35,7 @@ function openStudent(id){
     <div class="modal-hero">
       <div class="person"><span>${escapeHtml(student.initials)}</span><div><p class="eyebrow">Reporte individual</p><h2 id="studentModalTitle">${escapeHtml(student.fullName)}</h2><small>${escapeHtml(student.maturity)}</small></div></div>
       <div class="modal-summary">
-        <article><small>Promedio entregado</small><b>${Number(student.avgSubmitted||0).toFixed(2)}/4</b></article>
+        <article><small>Promedio de sprints evaluados</small><b>${Number(student.avgSubmitted||0).toFixed(2)}/4</b></article>
         <article><small>programScore</small><b>${Number(student.programScore||0).toFixed(2)}/4</b></article>
         <article><small>Industria síntesis</small><b>${escapeHtml(student.summaryIndustry)}</b></article>
       </div>
@@ -51,10 +51,14 @@ function openStudent(id){
             <p><b>Industria</b>${escapeHtml(sprint.industry)}</p>
             <p><b>Lectura</b>Esta información corresponde a la entrega evaluada de este sprint.</p>
           </div>
+          <div class="rubric-explain">
+            <h4>Cómo se evaluó esta misión</h4>
+            <p>El score integra la calidad de la entrega frente a la misión del sprint: claridad del objetivo, contexto entregado al modelo, estructura del prompt o solución, aplicabilidad profesional, evidencia de resultado y oportunidad de mejora. El desglose numérico por criterio se incorporará como rúbrica estructurada en la siguiente versión del sistema.</p>
+          </div>
           <div class="modal-lists">
-            <div><h4>Evidencia</h4><ul>${list(sprint.evidence)}</ul></div>
-            <div><h4>Fortalezas</h4><ul>${list(sprint.strengths)}</ul></div>
-            <div><h4>Siguientes pasos</h4><ul>${list(sprint.recommendations)}</ul></div>
+            <div><h4>Evidencia observada</h4><ul>${list(sprint.evidence)}</ul></div>
+            <div><h4>Por qué suma al score</h4><ul>${list(sprint.strengths)}</ul></div>
+            <div><h4>Qué faltó para subir de nivel</h4><ul>${list(sprint.recommendations)}</ul></div>
           </div>
         </article>
       `).join('')}
