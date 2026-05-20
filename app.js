@@ -28,6 +28,22 @@ function domainScale(score){
     <p class="domain-note"><b class="${cls}">${escapeHtml(label)}</b></p>
   </div>`;
 }
+function rubricTable(sprint){
+  const rows=sprint.rubricBreakdown||[];
+  if(!rows.length){
+    return `<div class="rubric-explain rubric-pending"><h4>Rúbrica aplicada</h4><p>La misión ya tiene score global, evidencia y recomendaciones. El desglose numérico por criterio se generará en la siguiente corrida de enriquecimiento de rúbrica.</p></div>`;
+  }
+  return `<div class="rubric-table-wrap">
+    <div class="rubric-table-head"><div><h4>Rúbrica aplicada</h4><p>${escapeHtml(sprint.rubricSummary||'Desglose por criterios oficiales del sprint.')}</p></div><b>${Number(sprint.score||0).toFixed(2)}/4</b></div>
+    <table class="rubric-table">
+      <thead><tr><th>Criterio</th><th>Score</th><th>Nivel</th><th>Evidencia</th><th>Para subir</th></tr></thead>
+      <tbody>${rows.map(row=>{
+        const [label,cls]=scoreLevel(row.score);
+        return `<tr><td><b>${escapeHtml(row.criterion)}</b></td><td><span class="score-mini">${Number(row.score||0).toFixed(1)}/4</span></td><td><span class="pill ${cls}">${escapeHtml(row.level||label)}</span></td><td>${escapeHtml(row.evidence)}</td><td>${escapeHtml(row.improvement)}</td></tr>`;
+      }).join('')}</tbody>
+    </table>
+  </div>`;
+}
 function openStudent(id){
   const student=(d.students||[]).find(item=>item.studentId===id);
   if(!student)return;
@@ -51,10 +67,7 @@ function openStudent(id){
             <p><b>Industria</b>${escapeHtml(sprint.industry)}</p>
             <p><b>Lectura</b>Esta información corresponde a la entrega evaluada de este sprint.</p>
           </div>
-          <div class="rubric-explain">
-            <h4>Cómo se evaluó esta misión</h4>
-            <p>El score integra la calidad de la entrega frente a la misión del sprint: claridad del objetivo, contexto entregado al modelo, estructura del prompt o solución, aplicabilidad profesional, evidencia de resultado y oportunidad de mejora. El desglose numérico por criterio se incorporará como rúbrica estructurada en la siguiente versión del sistema.</p>
-          </div>
+          ${rubricTable(sprint)}
           <div class="modal-lists">
             <div><h4>Evidencia observada</h4><ul>${list(sprint.evidence)}</ul></div>
             <div><h4>Por qué suma al score</h4><ul>${list(sprint.strengths)}</ul></div>
