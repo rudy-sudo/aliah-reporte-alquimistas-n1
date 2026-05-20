@@ -38,6 +38,9 @@ function rubricTable(sprint){
     <table class="rubric-table">
       <thead><tr><th>Criterio</th><th>Score</th><th>Nivel</th><th>Evidencia</th><th>Para subir</th></tr></thead>
       <tbody>${rows.map(row=>{
+        if(row.sourceStatus==='not_captured_by_classroom_api'||row.score===null||row.score===undefined){
+          return `<tr class="rubric-non-evaluable"><td><b>${escapeHtml(row.criterion)}</b></td><td><span class="score-mini muted-score">${escapeHtml(row.scoreDisplay||'No evaluable')}</span></td><td><span class="pill level-base">${escapeHtml(row.level||'No evaluable')}</span></td><td>${escapeHtml(row.evidence)}</td><td>${escapeHtml(row.improvement)}</td></tr>`;
+        }
         const [label,cls]=scoreLevel(row.score);
         return `<tr><td><b>${escapeHtml(row.criterion)}</b></td><td><span class="score-mini">${Number(row.score||0).toFixed(1)}/4</span></td><td><span class="pill ${cls}">${escapeHtml(row.level||label)}</span></td><td>${escapeHtml(row.evidence)}</td><td>${escapeHtml(row.improvement)}</td></tr>`;
       }).join('')}</tbody>
