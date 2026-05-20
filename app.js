@@ -107,7 +107,8 @@ function openStudent(id){
   modal.setAttribute('aria-hidden','false');
 }
 function closeStudent(){document.body.classList.remove('modal-open');modal.setAttribute('aria-hidden','true')}
-document.querySelectorAll('[data-student]').forEach(button=>button.addEventListener('click',()=>openStudent(button.dataset.student)));
+document.querySelectorAll('tr[data-student]').forEach(row=>row.addEventListener('click',event=>{if(event.target.closest('button'))return;openStudent(row.dataset.student)}));
+document.querySelectorAll('button[data-student]').forEach(button=>button.addEventListener('click',event=>{event.stopPropagation();openStudent(button.dataset.student)}));
 modalClose?.addEventListener('click',closeStudent);
 modal?.addEventListener('click',event=>{if(event.target===modal)closeStudent()});
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeStudent()});
