@@ -5,7 +5,7 @@ const gridColor='#00000010';
 new Chart(document.getElementById('funnelChart'),{type:'bar',data:{labels:['Inscritos','Evaluados','Sprint 1','Sprint 2'],datasets:[{label:'Participación',data:[d.roster,d.evaluated,d.s1,d.s2],backgroundColor:['#d8d2c7','#321c72','#7d62d3','#d69422'],borderRadius:14}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:fontColor},grid:{display:false}},y:{ticks:{color:fontColor},grid:{color:gridColor},beginAtZero:true}}}});
 new Chart(document.getElementById('scoreChart'),{type:'radar',data:{labels:['Sprint 1','Sprint 2','Sprint 3','Sprint 4'],datasets:[{label:'Dominio técnico /4',data:[d.s1Avg,d.s2Avg,0,0],backgroundColor:'#321c7226',borderColor:'#321c72',pointBackgroundColor:'#d69422'}]},options:{plugins:{legend:{display:false}},scales:{r:{min:0,max:4,ticks:{color:fontColor,backdropColor:'transparent'},grid:{color:gridColor},angleLines:{color:gridColor},pointLabels:{color:'#151515'}}}}});
 new Chart(document.getElementById('maturityChart'),{type:'doughnut',data:{labels:d.maturityLabels,datasets:[{data:d.maturityValues,backgroundColor:['#321c72','#7d62d3','#d69422','#628a48','#b36b6b','#d8d2c7']}]},options:{plugins:{legend:{position:'bottom',labels:{color:fontColor}}}}});
-new Chart(document.getElementById('industryChart'),{type:'bar',data:{labels:d.industryLabels,datasets:[{data:d.industryValues,backgroundColor:'#321c72',borderRadius:10}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:fontColor},grid:{color:gridColor}},y:{ticks:{color:fontColor},grid:{display:false}}}}});
+new Chart(document.getElementById('optimizationChart'),{type:'bar',data:{labels:d.optimizationLabels,datasets:[{data:d.optimizationValues,backgroundColor:'#321c72',borderRadius:10}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:fontColor},grid:{color:gridColor}},y:{ticks:{color:fontColor},grid:{display:false}}}}});
 const modal=document.getElementById('studentModal');
 const modalContent=document.getElementById('studentModalContent');
 const modalClose=document.getElementById('modalClose');
@@ -79,7 +79,7 @@ function openStudent(id){
         <article><small>Promedio de dominio técnico</small><b>${Number(student.avgSubmitted||0).toFixed(2)}/4</b></article>
         <article><small>programScore técnico</small><b>${Number(student.programScore||0).toFixed(2)}/4</b></article>
         <article><small>Potencial champion</small><b><span class="pill ${championCls}">${escapeHtml(championLabel)}</span></b></article>
-        <article><small>Industria síntesis</small><b>${escapeHtml(student.summaryIndustry)}</b></article>
+        <article><small>Área de optimización</small><b>${escapeHtml(student.summaryOptimizationArea)}</b></article>
       </div>
     </div>
     <div class="modal-body">
@@ -91,7 +91,7 @@ function openStudent(id){
           <div class="modal-ai-grid">
             <p><b>Propósito detectado</b>${escapeHtml(sprint.purpose)}</p>
             <p><b>Logro esperado</b>${escapeHtml(sprint.achievement)}</p>
-            <p><b>Industria</b>${escapeHtml(sprint.industry)}</p>
+            <p><b>Área de optimización</b>${escapeHtml(sprint.optimizationArea)}</p>
             <p><b>Lectura</b>El dominio técnico corresponde a la entrega evaluada de este sprint. La metacognición se analiza por separado.</p>
           </div>
           ${rubricTable(sprint)}
@@ -102,12 +102,17 @@ function openStudent(id){
           </div>
         </article>
       `).join('')}
+      <article class="certification-panel">
+        <div><p class="eyebrow">Diploma</p><h3>Estado de elegibilidad</h3></div>
+        <p><b>${escapeHtml(student.certificationStatus||'En progreso')}</b></p>
+        <p>La descarga del diploma debe vivir aquí, dentro del reporte individual, y sólo se habilitará al cierre cuando el estudiante demuestre las competencias requeridas.</p>
+      </article>
     </div>`;
   document.body.classList.add('modal-open');
   modal.setAttribute('aria-hidden','false');
 }
 function closeStudent(){document.body.classList.remove('modal-open');modal.setAttribute('aria-hidden','true')}
-document.querySelectorAll('tr[data-student]').forEach(row=>row.addEventListener('click',event=>{if(event.target.closest('button'))return;openStudent(row.dataset.student)}));
+document.querySelectorAll('tr[data-student], article[data-student]').forEach(row=>row.addEventListener('click',event=>{if(event.target.closest('button'))return;openStudent(row.dataset.student)}));
 document.querySelectorAll('button[data-student]').forEach(button=>button.addEventListener('click',event=>{event.stopPropagation();openStudent(button.dataset.student)}));
 modalClose?.addEventListener('click',closeStudent);
 modal?.addEventListener('click',event=>{if(event.target===modal)closeStudent()});
