@@ -54,13 +54,15 @@ function rubricTable(sprint){
 function championPanel(signal){
   const [label,cls]=championLevel(signal);
   const evidence=signal?.evidence||{};
+  const meta=String(evidence.metacognitionQuality||'').trim();
+  const metaHtml=meta?`<span><b>Metacognición</b>${escapeHtml(meta)}</span>`:'';
   return `<div class="champion-panel">
     <div class="champion-panel-head"><h4>Potencial champion</h4><span class="pill ${cls}">${escapeHtml(label)}</span></div>
-    <p>Esta señal no modifica el dominio técnico. Sirve para identificar potencial de adopción interna y se confirmará con metacognición de Forms.</p>
+    <p>Esta señal no modifica el dominio técnico. Sirve para identificar potencial de adopción interna a partir de la evidencia disponible.</p>
     <ul>${list(signal?.reasons||[])}</ul>
     <div class="champion-evidence">
       <span><b>Dominio</b>${escapeHtml(evidence.technicalPerformance||'Sin datos')}</span>
-      <span><b>Metacognición</b>${escapeHtml(evidence.metacognitionQuality||'Pendiente')}</span>
+      ${metaHtml}
       <span><b>Aplicación</b>${escapeHtml(evidence.workApplication||'Por confirmar')}</span>
       <span><b>Consistencia</b>${escapeHtml(evidence.consistency||'Por confirmar')}</span>
     </div>
