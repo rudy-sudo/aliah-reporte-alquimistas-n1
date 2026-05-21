@@ -84,7 +84,7 @@ function openStudent(id){
     </div>
     <div class="modal-body">
       ${championPanel(student.championSummary||{})}
-      ${(student.sprints||[]).map(sprint=>`
+      ${(student.sprints&&student.sprints.length)?student.sprints.map(sprint=>`
         <article class="modal-sprint">
           <div class="modal-sprint-head"><div><p class="eyebrow">Sprint ${sprint.sprint}</p><h3>${escapeHtml(sprint.profession)}</h3></div><span class="modal-sprint-score">${Number(sprint.score||0).toFixed(2)}/4 <small>dominio técnico</small></span></div>
           ${domainScale(sprint.score)}
@@ -101,7 +101,7 @@ function openStudent(id){
             <div><h4>Qué faltó para subir de nivel</h4><ul>${list(sprint.recommendations)}</ul></div>
           </div>
         </article>
-      `).join('')}
+      `).join(''):`<article class="modal-sprint"><div class="modal-sprint-head"><div><p class="eyebrow">Sin entrega evaluada</p><h3>No hay evidencia técnica suficiente</h3></div><span class="modal-sprint-score">0.00/4 <small>dominio técnico</small></span></div><p class="muted">Este alumno aparece en la vista de cohorte porque forma parte del roster, pero aún no hay una respuesta evaluable de sprint en el reporte publicado.</p></article>`}
       <article class="certification-panel">
         <div><p class="eyebrow">Diploma</p><h3>Estado de elegibilidad</h3></div>
         <p><b>${escapeHtml(student.certificationStatus||'En progreso')}</b></p>
@@ -114,6 +114,23 @@ function openStudent(id){
 function closeStudent(){document.body.classList.remove('modal-open');modal.setAttribute('aria-hidden','true')}
 document.querySelectorAll('tr[data-student], article[data-student]').forEach(row=>row.addEventListener('click',event=>{if(event.target.closest('button'))return;openStudent(row.dataset.student)}));
 document.querySelectorAll('button[data-student]').forEach(button=>button.addEventListener('click',event=>{event.stopPropagation();openStudent(button.dataset.student)}));
+const searchInput=document.getElementById('studentSearch');
+const filterButtons=[...document.querySelectorAll('.filter-pill')];
+let activeFilter='all';
+function applyDirectoryFilters(){
+  const query=(searchInput?.value||'').trim().toLowerCase();
+  document.querySelectorAll('.directory-row').forEach(row=>{
+    const matchesQuery=!query||(row.dataset.search||'').includes(query);
+    const matchesFilter=activeFilter==='all'||row.dataset.status===activeFilter;
+    row.hidden=!(matchesQuery&&matchesFilter);
+  });
+}
+searchInput?.addEventListener('input',applyDirectoryFilters);
+filterButtons.forEach(button=>button.addEventListener('click',()=>{
+  activeFilter=button.dataset.filter||'all';
+  filterButtons.forEach(item=>item.classList.toggle('active',item===button));
+  applyDirectoryFilters();
+}));
 modalClose?.addEventListener('click',closeStudent);
 modal?.addEventListener('click',event=>{if(event.target===modal)closeStudent()});
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeStudent()});
